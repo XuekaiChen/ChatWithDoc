@@ -1,0 +1,7 @@
+encode_model_path: /data/chenxuekai/bert-sentence/paraphrase-multilingual-MiniLM-L12-v2
+faiss_path: /data/chenxuekai/ChatFin/faiss_index
+header_and_footer:
+  header: true
+  footer: true
+context_num: 1
+chatglm6b_url: http://10.112.9.164:8000
