@@ -1,6 +1,0 @@
-camelot_py==0.11.0
-pandas==1.2.5
-pdfplumber==0.7.6
-PyPDF2==3.0.1
-
-flask~=2.1.2
