@@ -1,0 +1,14 @@
+faiss==1.7.3
+gradio==3.35.2
+jieba==0.42.1
+numpy==1.21.6
+numpy==1.23.4
+pandas==2.0.1
+pdfplumber==0.9.0
+PyPDF2==3.0.1
+python_docx==0.8.11
+PyYAML==6.0
+Requests==2.31.0
+sentence_transformers==2.2.2
+textrank4zh==0.3
+torch==2.0.1
