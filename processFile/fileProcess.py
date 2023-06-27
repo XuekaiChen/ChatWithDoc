@@ -6,6 +6,7 @@ import os.path
 import json
 import time
 import hashlib
+import pickle
 from textrank4zh import TextRank4Sentence
 from processFile.txtReader import ProcessTxt
 from processFile.docxReader import ProcessDocx
@@ -41,7 +42,7 @@ class ProcessBook:
     def build_QApair(self, paras_list):
         # 整合为键值对
         faq_list = []
-        for i in range(len(paras_list)):  # TODO 考虑是否上文少，下文多
+        for i in range(len(paras_list)):
             temp = (paras_list[i], "\n".join(paras_list[i - 1:i + 2]))
             faq_list.append(temp)
 
@@ -61,11 +62,12 @@ class ProcessBook:
     def upload(self, faiss_path: str, file_path: str):
         # 识别文件类型，处理成paras列表
         paras = []
+        para_page = []
         file_suffix = file_path.split("/")[-1].split(".")[-1]
         if file_suffix == "docx" or file_suffix == "doc":
             paras = self.process_docx.get_paras(file_path)
         elif file_suffix == "pdf":
-            paras = self.process_pdf.get_paras(file_path)
+            paras, para_page = self.process_pdf.get_paras(file_path)
         elif file_suffix == "txt":
             paras = self.process_txt.get_paras(file_path)
 
@@ -86,5 +88,8 @@ class ProcessBook:
         # 存储context问答对
         with open(os.path.join(faiss_path, md5_str, "context_pair.json"), "w") as jsonfile:
             json.dump(qa_pair_list, jsonfile)
+        with open(os.path.join(faiss_path, md5_str, "paragraph_pages.data"), "wb") as f:
+            para_page.append([])  # 摘要FAQ没有对应页码
+            pickle.dump(para_page, f)
 
         return md5_str

@@ -82,13 +82,13 @@ class ProcessPdf:
                   path: str,
                   page_scope: list = None,
                   line_tolerance: float = None,
-                  merge_page_end: bool = True) -> list:
+                  merge_page_end: bool = True):
         """
         :param path: 文件路径
         :param page_scope: 页面范围(从1开始)，[起始页, 结束页]
         :param line_tolerance: 行距容差，需要合并内容的行距
         :param merge_page_end: 是否拼接上下页段落
-        :return: 段落列表
+        :return: 段落列表，段落页码
         """
         self._preprocess(path, self.header, self.footer)
         if line_tolerance:
@@ -102,7 +102,9 @@ class ProcessPdf:
                 self._pdfplumber_pdf.pages):
             print("指定页面范围有误")
             return []
+
         output_paragraph = []
+        para_page = []
         paragraph = ""
         for page_num in range(page_scope[0] - 1, page_scope[1]):
             # 去除表格部分
@@ -140,27 +142,33 @@ class ProcessPdf:
                     # 行距超过阈值，则分离段落
                     if words[i + 1]['top'] - words[i]['top'] > min_lineSpace:
                         output_paragraph.append(paragraph)
+                        para_page.append(page_num+1)
                         paragraph = ""
 
                 # 单独处理页面最后一行
                 if len(words) > 1 and words[-1]['top'] - words[-2]['top'] <= min_lineSpace:
                     paragraph += words[-1]['text']
                     output_paragraph.append(paragraph)
+                    para_page.append(page_num + 1)
                     paragraph = ""
                 else:  # 最后一行单独成段
                     output_paragraph.append(words[-1]['text'])
+                    para_page.append(page_num + 1)
 
                 # 若选择合并跨页内容，则在页面最后分区将output_paragraph末元素转到临时变量
                 if merge_page_end and text_scope[1] == self._longitudinal[1]:
                     paragraph = output_paragraph[-1]
                     del output_paragraph[-1]
+                    del para_page[-1]
 
         # 全书扫描结束，添加最后一段
         if paragraph:
             output_paragraph.append(paragraph)
+            para_page.append(page_scope[1])
 
-        return output_paragraph
+        return output_paragraph, para_page
 
+    # TODO 或许表格能形成Markdown形式加入文本
     def extract_tables(self,
                        path: str,
                        page_scope: list = None,
