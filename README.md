@@ -1,6 +1,9 @@
 # ChatWithDoc
 大语言模型ChatGLM-6B为基座，接入文档阅读功能进行实时问答，可上传txt/docx/pdf多种文件类型。
+### 内容比对
 ![问答示例](img/example.png)
+### 显示参考依据
+![问答参考](img/with_ref/png)
 ## 目前功能
 - 支持较少页数的文档理解
 - 支持问题的定位
