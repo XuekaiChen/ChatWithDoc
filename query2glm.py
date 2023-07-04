@@ -21,12 +21,13 @@ class ChatGLM:
         if page:
             article = f'依据来自文本第{page}页段落：{article}'
 
-        history_prompt = ""  # TODO history prompt是否还需要
+        history_prompt = ""
         history = history[-5:]  # 限制近5轮对话
         for i in range(len(history)):
             history_prompt = history_prompt + "Q：" + history[i][0] + "\n"
             history_prompt = history_prompt + "A：" + history[i][1] + "\n"
 
+        # prompt形式：Information-injected Dialogue-formatted prompt
         prompt = f"""
         Q：你是一个AI助手，严格遵照我所提供的知识回答问题。\
         A：知道了，我会严格按照您所提供的知识回答问题。\
@@ -57,13 +58,13 @@ class ChatGLM:
         query_embedding = self.encode_model.encode([query])
         # TODO 添加跨范围回答功能，并标注依据（建立索引时加入页码）
         #  方法：查找top3相关上下文，用confidence剔除无关的上下文
-        _, top_id = index_db.search(query_embedding, 2)  # top_id:(1, top_k)  
+        _, top_id = index_db.search(query_embedding, 2)  # top_id:(1, top_k)  _:[[8.93..,9.68..]]数越大越不相关
         most_sim_id = int(top_id[0][0])
         context = qa_pair_list[most_sim_id][1]
 
         # 加入参考页码
         page_ref = None
-        if para_pages:
+        if para_pages != [] and para_pages != [[]]:
             page_ref = para_pages[most_sim_id]
 
         # post_to_6b
