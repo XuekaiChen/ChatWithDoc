@@ -27,7 +27,7 @@ class ProcessBook:
         self.process_txt = ProcessTxt()
         self.encode_model = encode_model
 
-    def get_key_sentence(self, text, num=10):  # 过短文本没有摘要
+    def get_key_sentence(self, text, num=10): 
         self.tr4s.analyze(text=text, lower=True, source='all_filters')
         all_sent = []
         for item in self.tr4s.get_key_sentences(num=num):
