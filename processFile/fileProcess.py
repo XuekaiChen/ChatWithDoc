@@ -78,7 +78,7 @@ class ProcessBook:
         index_db = faiss.IndexFlatL2(query_embedding.shape[1])
         index_db.add(query_embedding)
 
-        # 存储索引库
+        # 存储索引库  TODO 转存到md5文件夹内，方便勾稽关系校验
         md5_str = string_to_md5(file_path)
         if not os.path.exists(faiss_path):
             os.makedirs(faiss_path)

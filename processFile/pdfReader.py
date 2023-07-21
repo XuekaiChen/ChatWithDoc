@@ -35,7 +35,7 @@ class ProcessPdf:
 
     def _preprocess(self, path, header, footer):
         self._pdfplumber_pdf = pdfplumber.open(path)
-        self._min_lineSpace = 30  # 默认的合并行间距
+        self._min_lineSpace = 26  # 默认的合并行间距
         halve = int(len(self._pdfplumber_pdf.pages) / 2)
         self._longitudinal = [self._pdfplumber_pdf.pages[0].bbox[1], self._pdfplumber_pdf.pages[0].bbox[3]]
 
@@ -51,7 +51,7 @@ class ProcessPdf:
         # 推荐tolerance行距
         for i in range(0, len(words) - 1):
             diff = words[i + 1]['top'] - words[i]['top']
-            if 15 < diff < self._min_lineSpace:
+            if 21 < diff < self._min_lineSpace:
                 self._min_lineSpace = diff
         self._min_lineSpace += 2
         print("默认选择推荐tolerance行距值：", self._min_lineSpace)
@@ -131,7 +131,10 @@ class ProcessPdf:
                     self._pdfplumber_pdf.pages[page_num].bbox[2],  # x1
                     text_scope[1]  # bottom
                 )
-                plumber_content = self._pdfplumber_pdf.pages[page_num].within_bbox(scope_tuple)
+                try:  # 横向表格先不考虑 TODO 横向招股书裁剪
+                    plumber_content = self._pdfplumber_pdf.pages[page_num].within_bbox(scope_tuple)
+                except:
+                    continue
                 words = plumber_content.extract_words()
                 if not words:
                     continue
@@ -197,7 +200,10 @@ class ProcessPdf:
                 self._pdfplumber_pdf.pages[page_num].bbox[2],  # x1
                 self._longitudinal[1]  # bottom
             )
-            page = self._pdfplumber_pdf.pages[page_num].within_bbox(scope_tuple)
+            try:
+                page = self._pdfplumber_pdf.pages[page_num].within_bbox(scope_tuple)
+            except:
+                continue
             tables = page.extract_tables()
             if len(tables) == 0:
                 continue
@@ -248,7 +254,7 @@ class ProcessPdf:
 
 if __name__ == "__main__":
     pdfReader = ProcessPdf(header=True, footer=True)
-    file_path = "../inputs/景杰生物招股说明书.pdf"
+    file_path = "../inputs/jingjie.pdf"
     outlines = pdfReader.extract_outline(file_path)
     paragraphs = pdfReader.get_paras(file_path, merge_page_end=False)
     for idx, i in enumerate(paragraphs):
