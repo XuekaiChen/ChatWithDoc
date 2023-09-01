@@ -1,2 +1,5 @@
 inputs/
 .idea/
+docs/
+data/
+classifier/intention_classifier.train
