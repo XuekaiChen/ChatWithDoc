@@ -11,6 +11,7 @@ from textrank4zh import TextRank4Sentence
 from processFile.txtReader import ProcessTxt
 from processFile.docxReader import ProcessDocx
 from processFile.pdfReader import ProcessPdf
+from sentence_transformers import SentenceTransformer as SBert
 import faiss
 
 
@@ -20,12 +21,12 @@ def string_to_md5(s):
 
 
 class ProcessBook:
-    def __init__(self, encode_model, header=False, footer=False) -> None:
+    def __init__(self, config) -> None:
         self.tr4s = TextRank4Sentence()
-        self.process_pdf = ProcessPdf(header=header, footer=footer)
+        self.process_pdf = ProcessPdf(**config['header_and_footer'])
         self.process_docx = ProcessDocx()
         self.process_txt = ProcessTxt()
-        self.encode_model = encode_model
+        self.encode_model = SBert(config['encode_model_path'])
 
     def get_key_sentence(self, text, num=10): 
         self.tr4s.analyze(text=text, lower=True, source='all_filters')
