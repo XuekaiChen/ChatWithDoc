@@ -21,7 +21,6 @@ import gradio as gr
 import asyncio
 import requests
 from pathlib import Path
-from sentence_transformers import SentenceTransformer as SBert
 from query2glm import ChatGLM
 from processFile.fileProcess import ProcessBook
 from articulation.check import Articulation_check
@@ -35,8 +34,8 @@ static_dir.mkdir(parents=True, exist_ok=True)
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
-encode_model = SBert(config['encode_model_path'])
-glm_chater = ChatGLM(chat_url=config['chatglm6b_url'], faiss_path=config['faiss_path'], encode_model=encode_model)
+glm_chater = ChatGLM(config=config)
+
 checker = Articulation_check(config)
 global c_range_id
 history_id_dic = {}  # {id: history_list}
@@ -83,7 +82,7 @@ def add_file(file, doc_list):
     global c_range_id
     global c_range_id_dic
     global history_id_dic
-    preprocess = ProcessBook(encode_model, **config['header_and_footer'])
+    preprocess = ProcessBook(config)
     c_range_id = preprocess.upload(config['faiss_path'], file.name)
     doc_name = file.name.split("/")[-1]
     c_range_id_dic[doc_name] = c_range_id

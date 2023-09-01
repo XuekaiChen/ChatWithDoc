@@ -5,6 +5,8 @@ header_and_footer:
   header: true
   footer: true
 context_num: 1
-chatglm6b_url: http://0.0.0.0.164:8000
+chatglm6b_url: http://0.0.0.0:8000
+reportglm_url: http://0.0.0.0:8001/api/chat
 pdf_url: http://0.0.0.0:8081/render_html
 default_pdf: /data/chenxuekai/ChatFin/inputs/default_pdf.pdf
+intention_classifier_model: intention_classifier.bin
