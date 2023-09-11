@@ -11,7 +11,8 @@ from textrank4zh import TextRank4Sentence
 from processFile.txtReader import ProcessTxt
 from processFile.docxReader import ProcessDocx
 from processFile.pdfReader import ProcessPdf
-from sentence_transformers import SentenceTransformer as SBert
+# from sentence_transformers import SentenceTransformer as SBert
+from text2vec import SentenceModel
 import faiss
 
 
@@ -26,7 +27,8 @@ class ProcessBook:
         self.process_pdf = ProcessPdf(**config['header_and_footer'])
         self.process_docx = ProcessDocx()
         self.process_txt = ProcessTxt()
-        self.encode_model = SBert(config['encode_model_path'])
+        # self.encode_model = SBert(config['encode_model_path'])
+        self.encode_model = SentenceModel(config['encode_model_path'])
 
     def get_key_sentence(self, text, num=10): 
         self.tr4s.analyze(text=text, lower=True, source='all_filters')
@@ -76,7 +78,7 @@ class ProcessBook:
         qa_pair_list = self.build_QApair(paras)
         query_list = [pair[0] for pair in qa_pair_list]
         query_embedding = self.encode_model.encode(query_list)
-        index_db = faiss.IndexFlatL2(query_embedding.shape[1])
+        index_db = faiss.IndexFlatL2(query_embedding.shape[1])  # embedding维度
         index_db.add(query_embedding)
 
         # 存储索引库  TODO 转存到md5文件夹内，方便勾稽关系校验
