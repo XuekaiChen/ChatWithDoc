@@ -1,5 +1,6 @@
 articulation_rule: /data/chenxuekai/ChatFin/articulation/rules.xlsx
-encode_model_path: /data/chenxuekai/bert-sentence/paraphrase-multilingual-MiniLM-L12-v2
+# encode_model_path: /data/chenxuekai/bert-sentence/paraphrase-multilingual-MiniLM-L12-v2
+encode_model_path: /data/chenxuekai/bert-sentence/text2vec-large-chinese
 faiss_path: /data/chenxuekai/ChatFin/faiss_index
 header_and_footer:
   header: true
@@ -9,4 +10,4 @@ chatglm6b_url: http://0.0.0.0:8000
 reportglm_url: http://0.0.0.0:8001/api/chat
 pdf_url: http://0.0.0.0:8081/render_html
 default_pdf: /data/chenxuekai/ChatFin/inputs/default_pdf.pdf
-intention_classifier_model: intention_classifier.bin
+intention_classifier_model: classifier/intention_classifier.bin

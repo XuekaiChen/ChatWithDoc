@@ -8,7 +8,8 @@ import json
 import jieba
 import pickle
 from classifier.classifier import Classifier
-from sentence_transformers import SentenceTransformer as SBert
+# from sentence_transformers import SentenceTransformer as SBert
+from text2vec import SentenceModel
 import faiss  # 注意，这个不能在引用BERT之前引入
 
 class ChatGLM:
@@ -16,7 +17,8 @@ class ChatGLM:
         self.faiss_path = config['faiss_path']
         self.chatglm6b_url = config['chatglm6b_url']
         self.reportglm_url = config['reportglm_url']
-        self.encode_model = SBert(config['encode_model_path'])
+        # self.encode_model = SBert(config['encode_model_path'])
+        self.encode_model = SentenceModel(config['encode_model_path'])
         self.classify_model = Classifier(config["intention_classifier_model"])
         self.similar_topk = 2
 
@@ -60,7 +62,7 @@ class ChatGLM:
         if not res.status_code == 200:
             return "生成报告API功能出现错误！"
         result = json.loads(res.text)
-        print(result["question"])
+        print(result)
 
         return result["question"]
 
@@ -80,6 +82,7 @@ class ChatGLM:
         # 2、意图分类：生成报告 or 问答
         words = " ".join(jieba.cut(query))
         category, confidence = self.classify_model.predict(words)
+        print(category)
 
         # 对于生成报告，post_to_lora，直接返回报告
         if category == "report":
